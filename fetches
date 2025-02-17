@@ -1,0 +1,25 @@
+import { useState } from "react";
+import { ethers } from "ethers";
+
+export default function WalletBalance() {
+    const [balance, setBalance] = useState(null);
+
+    async function fetchBalance() {
+        if (!window.ethereum) {
+            alert("MetaMask not installed!");
+            return;
+        }
+
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await provider.send("eth_requestAccounts", []);
+        const balance = await provider.getBalance(accounts[0]);
+        setBalance(ethers.formatEther(balance));
+    }
+
+    return (
+        <div>
+            <button onClick={fetchBalance}>Check Balance</button>
+            {balance && <p>Your Balance: {balance} ETH</p>}
+        </div>
+    );
+}
